@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>17th Century</title>
+    <link rel="stylesheet" href="hist.css"/>
+    <script src="hist.js"></script>
+  </head>
+  <body>
+    <div id="mapdiv">
+      <iframe src="world-map-1600.svg"></iframe>
+      <iframe src="world-map-1700.svg"></iframe>
+    </div>
+    <div id="left-title" class="floater">1600</div>
+    <div id="right-title" class="floater">1700</div>
+    <div id="notes" class="floater"></div>
+    <svg id="controls" viewBox="0 0 100 200">
+      <rect class="border" x="0" y="0" rx="5" ry="5" width="100" height="200"/>
+      <g id="zoom">
+        <g id="zoom-in">
+          <text x="50" y="50" dy="20">+</text>
+          <circle class="zoom-circ" cx="50" cy="50" r="40"/>
+        </g>
+        <g id="zoom-out" transform="translate(0,100)">
+          <text x="50" y="50" dy="20">&minus;</text>
+          <circle class="zoom-circ" cx="50" cy="50" r="40"/>
+        </g>
+      </g>
+    </svg>
+  </body>
+</html>
