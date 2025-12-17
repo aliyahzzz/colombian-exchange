@@ -1,15 +1,14 @@
 
-var __appMaps = [];
-
-
 class GeoMap {
     static zoomFactor = 1.5;
     
     constructor(frame) {
-        this.svg = frame.contentDocument.rootElement;
+        this.document = frame.contentDocument;
+        this.svg = this.document.rootElement;
         this.g = this.svg.querySelector("g#the-map");
+        this.notedGrp = this.svg.querySelector("g#noted");
+        this.notedElem = null;
         this.transform = this.svg.createSVGTransform();
-        this.ctm = this.g.getCTM();
         this.addEventListener("mousedown");
         this.addEventListener("mouseup");
         this.addEventListener("click");
@@ -70,7 +69,8 @@ class GeoMap {
     }
 
     click(event) {
-        console.log("click");
+        if (this.notedElem)
+            displayNotes(this.notedElem.getAttribute("id"));
     }
 
     mousemove(event) {
@@ -78,7 +78,48 @@ class GeoMap {
             this.moveBy(event.movementX, event.movementY);
             this.theOther.moveBy(event.movementX, event.movementY);
         }
+        else {
+            let elems = this.document.elementsFromPoint(event.clientX, event.clientY);
+            let notedElem = null;
+            for (let elem of elems) {
+                if (elem.parentElement && elem.parentElement == this.notedGrp) {
+                    notedElem = elem;
+                    break;
+                }
+            }
+            if (notedElem != this.notedElem) {
+                this.notedElem = notedElem;
+                this.g.style.cursor = notedElem == null ? "default" : "help";
+            }
+        }
     }
+}
+
+
+var __appMaps = [];
+var __notesDiv;
+
+
+function convertNotesToDivs() {
+    let notes, div;
+    for (let key in __appHistNotes) {
+        notes = __appHistNotes[key];
+        for (let i = 0; i < notes.length; i++) {
+            div = document.createElement("div");
+            //div.setAttribute("class", "note-par");
+            div.innerHTML = notes[i];
+            notes[i] = div;
+        }
+    }
+}
+
+function displayNotes(key) {
+    let contdiv = __notesDiv.lastElementChild;
+    while (contdiv.lastElementChild)
+        contdiv.lastElementChild.remove();
+    for (let div of __appHistNotes[key])
+        contdiv.appendChild(div);
+    __notesDiv.style.visibility = "visible";
 }
 
 function initApp() {
@@ -97,6 +138,12 @@ function initApp() {
         for (let map of __appMaps)
             map.zoomOut();
     });
+    document.body.querySelector("#close-btn").addEventListener("click", (event) => {
+        __notesDiv.style.visibility = "hidden";
+    });
+    __notesDiv = document.body.querySelector("div#notes");
+    convertNotesToDivs();
+    displayNotes("intro");
 }
 
 window.addEventListener("load", (event) => {

@@ -1,3 +1,4 @@
 
 text { cursor: default; }
-g#ctry > path { fill-opacity: .7; }
+/*g#ctry > path { fill-opacity: .7; }*/
+.noted { cursor: help; }
